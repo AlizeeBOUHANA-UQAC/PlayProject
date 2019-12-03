@@ -14,7 +14,7 @@ import play.api.libs.json._
 case class ReqSearch(textSearch: String, fieldTextSearch: String, levelMin: Int, levelMax: Int){
   //Todo: retourner les Spell resultats
   def createSpellReq(): Spell = {
-    val stream = new FileInputStream("Spells_TestBig.json")
+    val stream = new FileInputStream("AllSpells.json")
     val json = try {
       Json.parse(stream)
     } finally {
