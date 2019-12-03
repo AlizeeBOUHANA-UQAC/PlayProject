@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.Calendar
+
 import controllers.SearchForm.{Data, form}
 import javax.inject._
 import models.{ReqSearch, Spell}
@@ -44,10 +46,14 @@ class HomeController @Inject()(cc: MessagesControllerComponents) extends Message
       BadRequest(views.html.spellSearchView(spells.toSeq, formWithErrors, postUrl))
     }
     val successFunction = { data: Data =>
-      val req = ReqSearch(opt1_nomSpell = data.opt1, opt2_class = data.opt2, opt3_levelMin = data.opt3, opt4_bool = data.opt4);
+      val req = ReqSearch(data.textSearch, data.filedTextSearch, data.levelMin, data.levelMax);
       println("VICTOIRE" + req)
       spells.append(req.createSpellReq())
-      Redirect(routes.HomeController.listSearch()).flashing("info" -> "Search added !")
+      val now = Calendar.getInstance()
+      val currentMinute = now.get(Calendar.MINUTE)
+      Redirect(routes.HomeController.listSearch()).flashing("New Search " ->
+        (now.get(Calendar.DAY_OF_MONTH) + "/" + now.get(Calendar.MONTH)+1 + "/" + now.get(Calendar.YEAR) + "   " +
+          now.get(Calendar.HOUR) + ":" + now.get(Calendar.MINUTE) + ":" + now.get(Calendar.SECOND)))
     }
 
     val formValidationResult = form.bindFromRequest

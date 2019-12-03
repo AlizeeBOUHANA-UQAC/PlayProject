@@ -22,12 +22,14 @@
                     @helper.CSRF.formField
 
                     @helper.inputText(form("Text Search"))
+
                     @helper.inputRadioGroup(form("Field Text Search"),
                         options = Seq("creature"->"creature's name","spell1"->"spell's name","spell2"->"spell's description","all"->"all fileds"),
                         Symbol("_label") -> "Field Text Search",
                         Symbol("_error") -> form("Field Text Search").error.map(_.withMessage("select Field")))
-                    @helper.inputText(form("Level min"))
-                    @helper.inputText(form("Level max"))
+                    @helper.inputText(form("Level min"), 'value -> "1")
+                    @helper.inputText(form("Level max"), 'placeholder -> 10)
+
 
                     <button>Search</button>
                 }

@@ -3,7 +3,7 @@ package controllers
 object SearchForm {
   import play.api.data.Forms._
   import play.api.data.Form
-  case class Data(opt1: String, opt2: String, opt3: Int, opt4: String)
+  case class Data(textSearch: String, filedTextSearch: String, levelMin: Int, levelMax: Int)
 
   /**
    * The form definition for the "create a widget" form.
@@ -12,10 +12,10 @@ object SearchForm {
    */
   val form = Form(
     mapping(
-      "opt1" -> nonEmptyText,
-      "opt2" -> nonEmptyText,
-      "opt3" -> number(min = 1),
-      "opt4" -> nonEmptyText
+      "Text Search" -> text,
+      "Field Text Search" -> nonEmptyText,
+      "Level min" -> number(min = 0),
+      "Level max" -> number(min = 1)
     )(Data.apply)(Data.unapply)
   )
 }

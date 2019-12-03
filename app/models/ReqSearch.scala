@@ -1,13 +1,21 @@
 package models
+import java.io.FileInputStream
+import play.api.libs.json._
 
-import models.Spell
 
-case class ReqSearch(opt1_nomSpell: String, opt2_class: String, opt3_levelMin: Int, opt4_bool: String){
+case class ReqSearch(textSearch: String, fieldTextSearch: String, levelMin: Int, levelMax: Int){
   //Todo: retourner les Spell resultats
   def createSpellReq(): Spell = {
-    return Spell(opt1_nomSpell, opt2_class, 300)
+    return Spell(textSearch, fieldTextSearch, levelMin)
   }
 
+  val stream = new FileInputStream("file")
+  val json = try {
+    Json.parse(stream)
+  } finally {
+    stream.close()
+  }
+  println("VICTOIRE " + json)
 }
 
 
