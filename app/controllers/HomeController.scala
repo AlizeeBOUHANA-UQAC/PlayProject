@@ -15,11 +15,7 @@ import play.api.mvc._
 @Singleton
 class HomeController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc)  {
 
-  private val spells = scala.collection.mutable.ArrayBuffer(
-    Spell("Abadar's Truthtelling", "http://www.dxcontent.com/SDB_SpellBlock.asp?SDBID=1725", 1),
-    Spell("Ablative Barrier", "http://www.dxcontent.com/SDB_SpellBlock.asp?SDBID=1269", 2),
-    Spell("Absorbing Inhalation", "http://www.dxcontent.com/SDB_SpellBlock.asp?SDBID=1526", 4)
-  )
+  private val spells = Spell.
   private val postUrl = routes.HomeController.createReqSearch()
 
 
