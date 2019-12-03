@@ -1,0 +1,57 @@
+@import views.html.helper.select
+@import views.html.helper.options
+@import views.html.helper.inputRadioGroup
+@(spells: Seq[Spell], form: Form[SearchForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
+
+    @main("Welcome to the SpellSearch") {
+        <div id="content" class="wrapper doc">
+            <article>
+                <h1>Welcome to Spell Search</h1>
+
+                <h2>Request Search</h2>
+                @* Global errors are not tied to any particular form field *@
+                @if(form.hasGlobalErrors) {
+                    @form.globalErrors.map { error: FormError =>
+                        <div>
+                            @error.key: @error.message
+                        </div>
+                    }
+                }
+
+                @helper.form(postUrl) {
+                    @helper.CSRF.formField
+
+                    @helper.inputText(form("Text Search"))
+                    @helper.inputRadioGroup(form("Field Text Search"),
+                        options = Seq("creature"->"creature's name","spell1"->"spell's name","spell2"->"spell's description","all"->"all fileds"),
+                        Symbol("_label") -> "Field Text Search",
+                        Symbol("_error") -> form("Field Text Search").error.map(_.withMessage("select Field")))
+                    @helper.inputText(form("Level min"))
+                    @helper.inputText(form("Level max"))
+
+                    <button>Search</button>
+                }
+
+                <h2>Results Search</h2>
+
+                @* Flash shows updates to a page *@
+                @request.flash.data.map{ case (name, value) =>
+                <div>@name: @value</div>
+                }
+
+                <table>
+                    <thead>
+                        <tr><th>Name</th><th>Level</th><th>URL</th>
+                    </thead>
+                    <tbody>
+                    @for(w <- spells) {
+                        <tr><td>@w.name</td><td>Level @w.level</td><td><a href="@w.url">@w.url</a></td></tr>
+                    }
+                    </tbody>
+                </table>
+
+                <hr/>
+            </article>
+        </div>
+
+    }
