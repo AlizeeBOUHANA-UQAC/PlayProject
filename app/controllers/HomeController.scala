@@ -5,10 +5,8 @@ import java.util.Calendar
 import controllers.SearchForm.{Data, form}
 import javax.inject._
 import models.{ReqSearch, Spell}
-import org.apache.spark.sql.SparkSession
 import play.api.data.Form
 import play.api.mvc._
-import org.apache.spark.SparkConf
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -53,8 +51,6 @@ class HomeController @Inject()(cc: MessagesControllerComponents) extends Message
       spells.append(req.createSpellReq())
       val now = Calendar.getInstance()
       val currentMinute = now.get(Calendar.MINUTE)
-
-      //val spark = SparkSession
 
       Redirect(routes.HomeController.listSearch()).flashing("New Search " ->
         (now.get(Calendar.DAY_OF_MONTH) + "/" + now.get(Calendar.MONTH)+1 + "/" + now.get(Calendar.YEAR) + "   " +
