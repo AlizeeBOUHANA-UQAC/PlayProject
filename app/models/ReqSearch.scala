@@ -14,12 +14,7 @@ import play.api.libs.json._
 
 case class ReqSearch(textSearch: String, fieldTextSearch: String, levelMin: Int, levelMax: Int){
 
-  def createSpellReq(): Reads[Spell] = {
-    //Todo: retourner les Spell resultats
 
-    
-    return spellReads
-  }
 
 
 }

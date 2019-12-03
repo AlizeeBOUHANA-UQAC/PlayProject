@@ -5,7 +5,9 @@ import java.util.Calendar
 import controllers.SearchForm.{Data, form}
 import javax.inject._
 import models.{ReqSearch, Spell}
+import org.apache.spark.sql.SparkSession
 import play.api.data.Form
+import play.api.libs.json.Reads
 import play.api.mvc._
 
 /**
@@ -15,7 +17,7 @@ import play.api.mvc._
 @Singleton
 class HomeController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc)  {
 
-  private val spells = Spell.
+  private val spells: List[Spell] = Spell.allSpells()
   private val postUrl = routes.HomeController.createReqSearch()
 
 
@@ -33,18 +35,19 @@ class HomeController @Inject()(cc: MessagesControllerComponents) extends Message
 
   def listSearch: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     // Pass an unpopulated form to the template
-    Ok(views.html.spellSearchView(spells.toSeq, form, postUrl))
+    Ok(views.html.spellSearchView(spells, form, postUrl))
   }
 
   def createReqSearch: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     val errorFunction = { formWithErrors: Form[Data] =>
       println("false req" + formWithErrors.data)
-      BadRequest(views.html.spellSearchView(spells.toSeq, formWithErrors, postUrl))
+      BadRequest(views.html.spellSearchView(spells, formWithErrors, postUrl))
     }
+
     val successFunction = { data: Data =>
       val req = ReqSearch(data.textSearch, data.filedTextSearch, data.levelMin, data.levelMax);
       println("VICTOIRE" + req)
-      spells.append(req.createSpellReq())
+      //spells.append(req.createSpellReq())
       val now = Calendar.getInstance()
       val currentMinute = now.get(Calendar.MINUTE)
 

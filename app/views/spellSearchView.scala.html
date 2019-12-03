@@ -1,7 +1,8 @@
 @import views.html.helper.select
 @import views.html.helper.options
 @import views.html.helper.inputRadioGroup
-@(spells: Seq[Spell], form: Form[SearchForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
+@import play.api.libs.json.Reads
+@(spells: List[Spell], form: Form[SearchForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
 
     @main("Welcome to the SpellSearch") {
         <div id="content" class="wrapper doc">
@@ -47,7 +48,7 @@
                     </thead>
                     <tbody>
                     @for(w <- spells) {
-                        <tr><td>@w.name</td><td>Level @w.level</td><td><a href="@w.url">@w.url</a></td></tr>
+                        <tr><td>@w.name</td><td>Level @w.level</td><td>@w.components</td></tr>
                     }
                     </tbody>
                 </table>
