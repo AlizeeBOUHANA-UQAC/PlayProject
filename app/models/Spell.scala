@@ -1,8 +1,10 @@
 package models
 
 import models.Spell
-import java.io.FileInputStream
+import java.io._
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import scala.io.Source
 import play.api.libs.json._
 import play.api.libs.json.Reads._
@@ -19,82 +21,44 @@ import play.api.libs.json._
  * which are used for reads, distinct from the form processing DTO,
  * which are used for writes.
  */
-case class Spell(components: Array[String], spell_resistance: Boolean, level: Array[Int], school: String, description: String, name: String){
-
-
-}
+case class Spell(components: Array[String], spell_resistance: Boolean, level: Int, school: String, description: String, name: String)
 object Spell {
-  val mySpark = SparkSession
-    .builder()
-    .appName("Spark SQL basic example")
-    .config("spark.some.config.option", "some-value")
-    .getOrCreate()
   def allSpells(): List[Spell] = {
 
-
-    // For implicit conversions like converting RDDs to DataFrames
-    import mySpark.implicits._
-    val rdd = mySpark.read.json("AllSpells.json")
-
-
-
-
-
-    val result: List[Spell] = List[Spell]()
-
-    val t = rdd.map(row => {
-      println(row.getAs[Array[String]]("components"))
-      println(row.getAs[Boolean]("spell_resistance"))
-      println(row.getAs[Array[Int]]("level"))
-      println(row.getAs[String]("school"))
-      println(row.getAs[String]("description"))
-      println(row.getAs[String]("name"))
-      //val s = Spell(row.getAs[String]("name"), row.getAs[String]("name"), row.getAs[String]("name"), row.getAs[String]("name"), row.getAs[String]("name"))
-      val s = Spell(row.getAs[Array[String]]("components"), row.getAs[Boolean]("spell_resistance"), row.getAs[Array[Int]]("level"), row.getAs[String]("school"),
-        row.getAs[String]("description"), row.getAs[String]("name"))
-      result :+ s
-    })
-
-    return result
-  }
-
-
-
-}
-
-
-
-/*
-object Spell {
-  def allSpells(): Reads[Spell] = {
+    var listResult: List[Spell] = List();
     val stream = new FileInputStream("AllSpells.json")
-    val json = try {
+    val json: JsValue = try {
       Json.parse(stream)
     } finally {
       stream.close()
     }
 
-    implicit val spellReads: Reads[Spell] = (
-      (JsPath \ "components").read[Array[String]] and
-        (JsPath \ "spell_resistance").read[Boolean] and
-        (JsPath \ "level").read[Array[Int]] and
-        (JsPath \ "school").read[String] and
-        (JsPath \ "description").read[String] and
-        (JsPath \ "name").read[String]
-      )(Spell.apply _)
+    val components = json \\ "components"
+    val spell_resistance = json \\ "spell_resistance"
+    val level = json \\ "level"
+    val school = json \\ "school"
+    val description = json \\ "description"
+    val names = json \\ "name"
+    for (i <- names.indices){
+      val matcher = Pattern.compile("\\d+").matcher(level(i).toString)
+      var lev = -1
+      if (matcher.find) {
+        lev = matcher.group(0).toInt
+      }
 
-    val s = Reads.seq(spellReads)
-    val ss = Seq(spellReads)
-    println("VICTOIRE " + spellReads)
-
-    for (e <- spellReads){
-
+      val s = Spell(
+        components(i).toString.replaceAll("\\[|\\]|\"", "").split(",") ,
+        spell_resistance(i).toString.toBoolean,
+        lev,
+        school(i).toString.replaceAll("\"", ""),
+        description(i).toString.replaceAll("\"", ""),
+        names(i).toString.replaceAll("\"", "")
+      )
+      listResult = s::listResult
     }
-
-    List[Spell] l = Reads.list[]
-    Reads.listReads[spellReads]
-    return spellReads
+    return listResult
   }
+
+  
 }
 
-*/

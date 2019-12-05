@@ -17,7 +17,7 @@ import play.api.mvc._
 @Singleton
 class HomeController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc)  {
 
-  private val spells: List[Spell] = Spell.allSpells()
+  private val spells = Spell.allSpells()
   private val postUrl = routes.HomeController.createReqSearch()
 
 
