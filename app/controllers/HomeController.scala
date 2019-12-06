@@ -17,7 +17,8 @@ import play.api.mvc._
 @Singleton
 class HomeController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc)  {
 
-  private val spells = Spell.allSpells()
+  private val allSpells = Spell.allSpells()
+  private var spellsToShow = allSpells
   private val postUrl = routes.HomeController.createReqSearch()
 
 
@@ -35,25 +36,32 @@ class HomeController @Inject()(cc: MessagesControllerComponents) extends Message
 
   def listSearch: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     // Pass an unpopulated form to the template
-    Ok(views.html.spellSearchView(spells, form, postUrl))
+    Ok(views.html.spellSearchView(allSpells, form, postUrl))
   }
 
   def createReqSearch: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     val errorFunction = { formWithErrors: Form[Data] =>
       println("false req" + formWithErrors.data)
-      BadRequest(views.html.spellSearchView(spells, formWithErrors, postUrl))
+      BadRequest(views.html.spellSearchView(spellsToShow, formWithErrors, postUrl))
     }
 
     val successFunction = { data: Data =>
       val req = ReqSearch(data.textSearch, data.filedTextSearch, data.levelMin, data.levelMax);
       println("VICTOIRE" + req)
+      spellsToShow = req.resultReq(allSpells)
       //spells.append(req.createSpellReq())
       val now = Calendar.getInstance()
       val currentMinute = now.get(Calendar.MINUTE)
-
+      /*
       Redirect(routes.HomeController.listSearch()).flashing("New Search " ->
         (now.get(Calendar.DAY_OF_MONTH) + "/" + now.get(Calendar.MONTH)+1 + "/" + now.get(Calendar.YEAR) + "   " +
           now.get(Calendar.HOUR) + ":" + now.get(Calendar.MINUTE) + ":" + now.get(Calendar.SECOND)))
+
+
+       */
+      Ok(views.html.spellSearchView(spellsToShow, form, postUrl))
+
+
     }
 
     val formValidationResult = form.bindFromRequest

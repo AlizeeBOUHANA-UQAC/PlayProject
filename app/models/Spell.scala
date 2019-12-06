@@ -21,7 +21,7 @@ import play.api.libs.json._
  * which are used for reads, distinct from the form processing DTO,
  * which are used for writes.
  */
-case class Spell(components: Array[String], spell_resistance: Boolean, level: Int, school: String, description: String, name: String)
+case class Spell(components: Array[String], spell_resistance: Boolean, level: Int, school: String, description: String, name: String, url: String)
 object Spell {
   def allSpells(): List[Spell] = {
 
@@ -45,6 +45,7 @@ object Spell {
       if (matcher.find) {
         lev = matcher.group(0).toInt
       }
+      var name = names(i).toString.replaceAll("\"", "")
 
       val s = Spell(
         components(i).toString.replaceAll("\\[|\\]|\"", "").split(",") ,
@@ -52,13 +53,14 @@ object Spell {
         lev,
         school(i).toString.replaceAll("\"", ""),
         description(i).toString.replaceAll("\"", ""),
-        names(i).toString.replaceAll("\"", "")
+        name,
+        "https://www.d20pfsrd.com/magic/all-spells/" + name.substring(0, 1).toLowerCase() +  "/" + name.toLowerCase().replaceAll(" ","-")
       )
       listResult = s::listResult
     }
     return listResult
   }
 
-  
+
 }
 

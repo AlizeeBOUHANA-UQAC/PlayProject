@@ -47,8 +47,8 @@
                         <tr><th>Name</th><th>Level</th><th>URL</th>
                     </thead>
                     <tbody>
-                    @for(w <- spells) {
-                        <tr><td>@w.name</td><td>Level @w.level</td><td>@w.components</td></tr>
+                    @for(s <- spells) {
+                        <tr><td>@s.name</td><td>Level @s.level</td><td><a href="@s.url">@s.url</a></td></tr>
                     }
                     </tbody>
                 </table>
