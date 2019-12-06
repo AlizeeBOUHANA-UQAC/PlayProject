@@ -36,7 +36,7 @@ class HomeController @Inject()(cc: MessagesControllerComponents) extends Message
 
   def listSearch: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     // Pass an unpopulated form to the template
-    Ok(views.html.spellSearchView(allSpells, form, postUrl))
+    Ok(views.html.spellSearchView(spellsToShow, form, postUrl))
   }
 
   def createReqSearch: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
@@ -52,14 +52,14 @@ class HomeController @Inject()(cc: MessagesControllerComponents) extends Message
       //spells.append(req.createSpellReq())
       val now = Calendar.getInstance()
       val currentMinute = now.get(Calendar.MINUTE)
-      /*
+
+
+
+
+      Ok(views.html.spellSearchView(spellsToShow, form, postUrl))
       Redirect(routes.HomeController.listSearch()).flashing("New Search " ->
         (now.get(Calendar.DAY_OF_MONTH) + "/" + now.get(Calendar.MONTH)+1 + "/" + now.get(Calendar.YEAR) + "   " +
           now.get(Calendar.HOUR) + ":" + now.get(Calendar.MINUTE) + ":" + now.get(Calendar.SECOND)))
-
-
-       */
-      Ok(views.html.spellSearchView(spellsToShow, form, postUrl))
 
 
     }
